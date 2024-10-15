@@ -1,14 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
-#define N 4
+#include <time.h>
+#define N 20
 
-void afficher_tableau(int tableau[N][N]){
+void afficher_tableau(int tableau[N][N], int n, int m){
     int i, j;
     printf("----+---+---+----");
     printf("\n");
-    for(i = 0; i < N; i++){
+    for(i = 0; i < n; i++){
         printf("|");
-        for(j = 0; j < N; j++){
+        for(j = 0; j < m; j++){
             tableau[i][j] = 0;
             printf(" %d |", tableau[i][j]);
         }
@@ -50,17 +51,22 @@ void deplacement(){
         printf("Le carac %c est correct, vous vous déplacez à %s \n", c, s);
     }
 }
-        
 
+void spawn(int tableau[N][N], int nb_cases_vides, int n, int m){
+    int i, j;
+    for(i = 0; i < n; i++){
+        for(j = 0; j < m; j++){
+            if(
 
 
 
     
 int main(){
     int tableau[N][N];
-    
+
+    srand(time(NULL));
     printf("voici le tableau du jeu 2048 : \n");
-    afficher_tableau(tableau);
+    afficher_tableau(tableau, 4, 4);
     deplacement();
     exit(EXIT_SUCCESS);
 }
