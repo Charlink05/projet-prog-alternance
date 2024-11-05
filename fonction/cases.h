@@ -25,4 +25,8 @@ void deplacement_et_fusion(tableau *ta, char dir);
 void sauvegarde_tableau(tableau *ta, tableau *prec);
 void retour_arriere(tableau *ta, tableau *prec);
 
+int peux_bouger(tableau *ta, tableau *ta2);
+int fusion_effectue(tableau *ta);
+int compte_fusion(tableau *ta);
+
 #endif

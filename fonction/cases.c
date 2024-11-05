@@ -252,3 +252,64 @@ void retour_arriere(tableau *ta, tableau *prec){
         }
     }
 }
+
+int peux_bouger(tableau *ta, tableau *ta2){
+    int i, j;
+    for(i = 0; i < ta -> n; i++){
+        for(j = 0; j < ta -> m; j++){
+            if(ta -> tab[i][j] != ta2 -> tab[i][j]){
+                return 0;
+            }                
+        }
+    }
+    return 1;
+}
+
+/* pour l'instant inutile mais peut servir */
+/* void decrementer_cases_vides(cases *c) { */
+/*     if (c->cases_vides > 0) { */
+/*         c->cases_vides--; */
+/*     } */
+/* } */
+
+int fusion_effectue(tableau *ta){
+    int i, j; 
+    /* si fusion horizontale possibld */
+    for(i = 0; i < ta -> n; i++){
+        for(j = 0; j < ta -> m - 1; j++){
+            if(ta -> tab[i][j] != 0 && ta -> tab[i][j] == ta -> tab[i][j + 1]){
+                return 0;
+            }
+        }
+    }
+    /* si fusion verticale possible */
+    for(i = 0; i < ta -> n - 1; i++){
+        for(j = 0; j < ta -> m; j++){
+            if(ta -> tab[i][j] != 0 && ta -> tab[i][j] == ta -> tab[i + 1][j]){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+/* pareil que fusion_effectue mais calcule le nombre de fusions effectuées */
+int compte_fusion(tableau *ta){
+    int i, j, nb_fusion;
+    nb_fusion = 0;
+    for(i = 0; i < ta -> n; i++){
+        for(j = 0; j < ta -> m - 1; j++){
+            if(ta -> tab[i][j] != 0 && ta -> tab[i][j] == ta -> tab[i][j + 1]){
+                nb_fusion++;
+            }
+        }
+    }
+    for(i = 0; i < ta -> n - 1; i++){
+        for(j = 0; j < ta -> m; j++){
+            if(ta -> tab[i][j] != 0 && ta -> tab[i][j] == ta -> tab[i + 1][j]){
+                nb_fusion++;
+            }
+        }
+    }
+    return nb_fusion;
+}
