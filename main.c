@@ -12,8 +12,8 @@ int main() {
     int n = 4,
         m = 4,
         ok,
-        sauvegarde_effectue = 1,
         cases_vides,
+        sauvegarde_effectue = 1,
         prec_cases_vides,
         nb_fusion,
         game_over,
@@ -21,7 +21,7 @@ int main() {
         fini = 1;
     tableau ta, prec;
     cases c;
-    char dir;
+    MLV_Keyboard_button touche;
 
     srand(time(NULL));
     MLV_create_window("2048", "2048", 800, 800);
@@ -34,8 +34,9 @@ int main() {
     spawn_2_cases(&c, &ta);
     cases_vides = 14;
     prec_cases_vides = 14;
-    
+
     aff_tableau(ta);
+    aff_tableau_mlv(ta);
     ok = 1;
 
     while (ok == 1) {
@@ -46,12 +47,18 @@ int main() {
             if(victoire == 0){
                 printf("Bravo vous avez gagné ! \n");
                 fini = 0;
+                MLV_draw_text(300, 200, "Vous avez gagné !", MLV_COLOR_GREEN);
+                MLV_update_window();
+                MLV_wait_seconds(2);
             }
         }
 
         game_over = check_game_over(&ta);
         if (game_over && peux_bouger(&ta, &prec) == 0 && cases_vides == 0){
             printf("Vous avez perdu ! \n");
+            MLV_draw_text(300, 200, "Vous avez perdu !", MLV_COLOR_RED);
+            MLV_update_window();
+            MLV_wait_seconds(2);
             exit(EXIT_FAILURE);
         }
 
@@ -61,39 +68,39 @@ int main() {
             printf("Entrez une direction (z/q/s/d) pour déplacer, r pour revenir en arrière et a pour quitter : ");
         }
 
-        dir = getchar();
-        viderBuffer();
-
-        if (dir == 'a') {
+        MLV_wait_keyboard(&touche, NULL, NULL);
+        
+        if((MLV_get_keyboard_state(MLV_KEYBOARD_a) == MLV_PRESSED)){
             printf("Au revoir ! \n");
             ok = 0;
-        } else if (dir == 'z' || dir == 'q' || dir == 's' || dir == 'd') {
+        }
+        else if(touche == MLV_KEYBOARD_UP || touche == MLV_KEYBOARD_LEFT || touche == MLV_KEYBOARD_DOWN || touche == MLV_KEYBOARD_RIGHT){
             sauvegarde_tableau(&ta, &prec);
             prec_cases_vides = cases_vides;
-            
-
-            if (dir == 'z') {
+            nb_fusion = 0;
+            if (MLV_get_keyboard_state(MLV_KEYBOARD_UP) == MLV_PRESSED) {
                 deplacement_en_haut(&ta);
                 nb_fusion = fusion_haut(&ta);
-                deplacement_en_haut(&ta);
-            } else if (dir == 'q') {
+                
+            } else if ((MLV_get_keyboard_state(MLV_KEYBOARD_LEFT) == MLV_PRESSED)) {
                 deplacement_a_gauche(&ta);
                 nb_fusion = fusion_gauche(&ta);
-                deplacement_a_gauche(&ta);
-            } else if (dir == 's') {
+                
+            } else if  ((MLV_get_keyboard_state(MLV_KEYBOARD_DOWN) == MLV_PRESSED)){
                 deplacement_en_bas(&ta);
-                nb_fusion = fusion_bas(&ta);
-                deplacement_en_bas(&ta);
-            } else if (dir == 'd') {
+                nb_fusion = fusion_bas(&ta);           
+                
+            } else if ((MLV_get_keyboard_state(MLV_KEYBOARD_RIGHT) == MLV_PRESSED)) {
+                printf("déplacement à droite \n");
                 deplacement_a_droite(&ta);
                 nb_fusion = fusion_droite(&ta);
-                deplacement_a_droite(&ta);
             }
 
             printf("nb_fusion : %d \n", nb_fusion);
 
             if (peux_bouger(&ta, &prec) == 0) {
                 spawn_1_cases(&c, &ta);
+                aff_tableau_mlv(ta);
                 aff_tableau(ta);
                 if (nb_fusion == 0) {
                     cases_vides -= 1;
@@ -103,25 +110,27 @@ int main() {
             }
             else {
                 printf("Pas de mouvements possibles \n \n");
+                aff_tableau_mlv(ta);
                 aff_tableau(ta);
             }
             
             sauvegarde_effectue = 0;
             
-        } else if (dir == 'r' && sauvegarde_effectue == 0) {
+        } else if (((MLV_get_keyboard_state(MLV_KEYBOARD_r) == MLV_PRESSED)) && sauvegarde_effectue == 0) {
             printf("Tableau précédent \n \n");
             retour_arriere(&ta, &prec);
             cases_vides = prec_cases_vides;
             aff_tableau(ta);
-        } else if (dir == 'r' && sauvegarde_effectue == 1) {
+            aff_tableau_mlv(ta);
+        } else if (((MLV_get_keyboard_state(MLV_KEYBOARD_r) == MLV_PRESSED)) && sauvegarde_effectue == 1) {
             printf("Vous ne pouvez pas revenir en arrière si vous n'avez pas joué de coups. \n");
         } else {
             printf("Mauvaise direction : entrez bien 'z', 'q', 's', ou 'd' \n");
             aff_tableau(ta);
+            aff_tableau_mlv(ta);
         }
+        MLV_update_window();
     }
-
-    MLV_wait_seconds(10);
     MLV_free_window();
     exit(EXIT_SUCCESS);
 }

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <MLV/MLV_all.h>
 #include "types.h"
 
 void aff_cases(cases *c){
@@ -72,14 +73,16 @@ void spawn_1_cases(cases *c, tableau *ta){
 
 void deplacement_a_droite(tableau *ta){
     int i, j, k;
-    for(i = 0; i < ta -> n; i++){
-        for(j = ta -> m - 1; j >= 0; j--){
-            k = j;
-            if(ta -> tab[i][j] != 0){
-                while(k + 1 < ta-> m  && ta -> tab[i][k + 1] == 0){ /* on regarde si case de droite = 0 */
-                    ta -> tab[i][k + 1] = ta -> tab[i][k]; /* la case de droite devient la case d'avant (déplacement à droite) */
-                    ta -> tab[i][k] = 0; /* initialisation de l'ancienne case à 0 */
-                    k++;
+    if((MLV_get_keyboard_state(MLV_KEYBOARD_RIGHT) == MLV_PRESSED)){
+        for(i = 0; i < ta -> n; i++){
+            for(j = ta -> m - 1; j >= 0; j--){
+                k = j;
+                if(ta -> tab[i][j] != 0){
+                    while(k + 1 < ta-> m && ta -> tab[i][k + 1] == 0){ /* on regarde si case de droite = 0 */
+                        ta -> tab[i][k + 1] = ta -> tab[i][k]; /* la case de droite devient la case d'avant (déplacement à droite) */
+                        ta -> tab[i][k] = 0; /* initialisation de l'ancienne case à 0 */
+                        k++;
+                    }
                 }
             }
         }
@@ -88,14 +91,16 @@ void deplacement_a_droite(tableau *ta){
 
 void deplacement_a_gauche(tableau *ta){
     int i, j, k;
-    for(i = 0; i < ta -> n; i++){
-        for(j = 1; j < ta -> m ; j++){
-            k = j;
-            if(ta -> tab[i][j] != 0){
-                while(k - 1 >= 0 && ta -> tab[i][k - 1] == 0){ /* on regarde si case de gauche = 0 */
-                    ta -> tab[i][k - 1] = ta -> tab[i][k]; /* la case de gauche devient la case d'avant (déplacement à gauche) */
-                    ta -> tab[i][k] = 0; /* initialisation de l'ancienne case à 0 */
-                    k--;
+    if((MLV_get_keyboard_state(MLV_KEYBOARD_LEFT) == MLV_PRESSED)){
+        for(i = 0; i < ta -> n; i++){
+            for(j = 1; j < ta -> m ; j++){
+                k = j;
+                if(ta -> tab[i][j] != 0){
+                    while(k > 0 && ta -> tab[i][k - 1] == 0){ /* on regarde si case de gauche = 0 */
+                        ta -> tab[i][k - 1] = ta -> tab[i][k]; /* la case de gauche devient la case d'avant (déplacement à gauche) */
+                        ta -> tab[i][k] = 0; /* initialisation de l'ancienne case à 0 */
+                        k--;
+                    }
                 }
             }
         }
@@ -104,14 +109,16 @@ void deplacement_a_gauche(tableau *ta){
 
 void deplacement_en_bas(tableau *ta){
     int i, j, k;
-    for(i = ta -> n - 1; i >= 0; i--){
-        for(j = 0; j < ta -> m; j++){
-            k = i;
-            if(ta -> tab[i][j] != 0){
-                while(k + 1 < ta -> n && ta -> tab[k + 1][j] == 0){
-                    ta -> tab[k + 1][j] = ta -> tab[k][j];
-                    ta -> tab[k][j] = 0;
-                    k++;
+    if((MLV_get_keyboard_state(MLV_KEYBOARD_DOWN) == MLV_PRESSED)){
+        for(i = ta -> n - 1; i >= 0; i--){
+            for(j = 0; j < ta -> m; j++){
+                k = i;
+                if(ta -> tab[i][j] != 0){
+                    while(k + 1 < ta -> n && ta -> tab[k + 1][j] == 0){
+                        ta -> tab[k + 1][j] = ta -> tab[k][j];
+                        ta -> tab[k][j] = 0;
+                        k++;
+                    }
                 }
             }
         }
@@ -120,14 +127,16 @@ void deplacement_en_bas(tableau *ta){
 
 void deplacement_en_haut(tableau *ta){
     int i, j, k;
-    for(i = 1; i < ta -> n; i++){
-        for(j = 0; j < ta -> m; j++){
-            k = i;
-            if(ta -> tab[i][j] != 0){
-                while(k - 1 >= 0 && ta -> tab[k - 1][j] == 0){
-                    ta -> tab[k - 1][j] = ta -> tab[k][j];
-                    ta -> tab[k][j] = 0;
-                    k--;
+    if((MLV_get_keyboard_state(MLV_KEYBOARD_UP) == MLV_PRESSED)){
+        for(i = 1; i < ta -> n; i++){
+            for(j = 0; j < ta -> m; j++){
+                k = i;
+                if(ta -> tab[i][j] != 0){
+                    while(k - 1 >= 0 && ta -> tab[k - 1][j] == 0){
+                        ta -> tab[k - 1][j] = ta -> tab[k][j];
+                        ta -> tab[k][j] = 0;
+                        k--;
+                    }
                 }
             }
         }
@@ -155,15 +164,15 @@ int fusion_droite(tableau *ta){
     int i, j, nb_fusion;
     nb_fusion = 0;
     for(i = 0; i < ta -> n; i++){
-        for(j = ta -> m - 1; j > 0; j--){
-            if(ta -> tab[i][j] == ta -> tab[i][j - 1] && ta -> tab[i][j] != 0){
-                ta -> tab[i][j] *= 2;
-                ta -> tab[i][j - 1] = 0;
+        for(j = ta -> m - 1; j >= 0; j--){
+            if(ta -> tab[i][j] == ta -> tab[i][j + 1] && ta -> tab[i][j] != 0){
+                ta -> tab[i][j + 1] *= 2;
+                ta -> tab[i][j] = 0;
                 nb_fusion += 1;
             }
         }
     }
-    /* deplacement_a_droite(ta); */
+    deplacement_a_droite(ta);
     return nb_fusion;
 }
 
@@ -171,47 +180,47 @@ int fusion_gauche(tableau *ta){
     int i, j, nb_fusion;
     nb_fusion = 0;
     for(i = 0; i < ta -> n; i++){
-        for(j = 0; j < ta -> m ; j++){
-            if(ta -> tab[i][j] == ta -> tab[i][j + 1] && ta -> tab[i][j] != 0){
-                ta -> tab[i][j] *= 2;
-                ta -> tab[i][j + 1] = 0;
+        for(j = 1; j < ta -> m ; j++){
+            if(ta -> tab[i][j] == ta -> tab[i][j - 1] && ta -> tab[i][j] != 0){
+                ta -> tab[i][j - 1] *= 2;
+                ta -> tab[i][j] = 0;
                 nb_fusion += 1;
             }
         }
     }
-    /* deplacement_a_gauche(ta); */
+    deplacement_a_gauche(ta);
     return nb_fusion;
 }
 
 int fusion_haut(tableau *ta){
     int i, j, nb_fusion;
     nb_fusion = 0; 
-    for(i = 0; i < ta -> n; i++){
-        for(j = 0; j < ta -> m; j++){
-            if(ta -> tab[i][j] == ta -> tab[i + 1][j] && ta -> tab[i][j] != 0){
-                ta -> tab[i][j] *= 2;
-                ta -> tab[i + 1][j] = 0;
+    for(j = 0; j < ta -> m; j++){
+        for(i = 1; i < ta -> n; i++){
+            if(ta -> tab[i][j] == ta -> tab[i - 1][j] && ta -> tab[i][j] != 0){
+                ta -> tab[i - 1][j] *= 2;
+                ta -> tab[i][j] = 0;
                 nb_fusion += 1;
             }
         }
     }
-    /* deplacement_en_haut(ta); */
+    deplacement_en_haut(ta);
     return nb_fusion;
 }
 
 int fusion_bas(tableau *ta){
     int i, j, nb_fusion;
     nb_fusion = 0;
-    for(i = ta -> n - 1; i > 0; i--){
-        for(j = 0; j < ta -> m; j++){
-            if(ta -> tab[i][j] == ta -> tab[i - 1][j] && ta -> tab[i][j] != 0){
-                ta -> tab[i][j] *= 2;
-                ta -> tab[i - 1][j] = 0;
+    for(j = 0; j < ta -> m; j++){
+        for(i = ta -> n - 2; i >= 0; i--){
+            if(ta -> tab[i][j] == ta -> tab[i + 1][j] && ta -> tab[i][j] != 0){
+                ta -> tab[i + 1][j] *= 2;
+                ta -> tab[i][j] = 0;
                 nb_fusion += 1;
             }
         }
     }
-    /* deplacement_en_bas(ta); */
+    deplacement_en_bas(ta);
     return nb_fusion;
 }
 
@@ -418,3 +427,4 @@ int check_victoire(tableau *ta){
     }
     return 1;
 }
+
