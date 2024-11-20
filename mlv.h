@@ -3,6 +3,6 @@
 
 void aff_2048();
 
-void aff_jeu();
+void aff_tableau_mlv(tableau ta);
 
 #endif
