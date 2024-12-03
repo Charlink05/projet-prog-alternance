@@ -6,11 +6,11 @@ void aff_tableau(tableau ta){
     int i, j;
     for(i = 0; i < ta.n; i++){
         for(j = 0; j < ta.m; j++){
-            printf("| ");
-            printf("%d ", ta.tab[i][j]);
+            printf("| %d ", ta.tab[i][j]);
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 tableau initialisation_tableau(int n, int m){
@@ -18,8 +18,8 @@ tableau initialisation_tableau(int n, int m){
     tableau ta;
     ta.n = n;
     ta.m = m;
-    for(i = 0; i < n; i++){
-        for(j = 0; j < m; j++){
+    for(i = 0; i < ta.n; i++){
+        for(j = 0; j < ta.m; j++){
             ta.tab[i][j] = 0;
         }
     }

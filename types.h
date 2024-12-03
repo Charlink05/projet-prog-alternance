@@ -1,7 +1,10 @@
 #ifndef _TYPE_H_
 #define _TYPE_H_
 
-#define N 50
+
+#define LX 1000
+#define LY 1000
+#define N 4
 
 
 typedef struct{
@@ -11,15 +14,24 @@ typedef struct{
 } tableau;
 
 typedef struct{
-    int couleur;
     int x;
     int y;
-    int cases_vides;
+    int valeur;
 } cases;
 
 typedef struct{
-    char *pseudo;
+    char pseudo[100];
     int score;
 } joueur;
 
+/* Menu */
+#define L 20
+
+typedef struct{
+    int x;
+    int y;
+    int hauteur;
+    int largeur;
+    char txt[L];
+} bouton;
 #endif
