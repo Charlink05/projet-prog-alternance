@@ -40,7 +40,6 @@ void jeu(tableau *ta, cases *c){
             if(victoire == 0){
                 /* printf("Bravo vous avez gagné ! \n"); */
                 fini = 0;
-                MLV_draw_text(300, 200, "Vous avez gagné !", MLV_COLOR_GREEN);
                 MLV_actualise_window();
                 MLV_wait_seconds(2);
             }

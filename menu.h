@@ -11,9 +11,9 @@ void menu_depart(bouton t_bouton_m[4]);
 
 void menu_save(bouton t_bouton_s[4]);
 
-int read(char *nom, joueur *jo, tableau *ta);
+int charger(char *nom, joueur *jo, tableau *ta);
 
-int writ(char *nom, joueur *jo, tableau *ta);
+int save_p(char *nom, joueur *jo, tableau *ta);
 
 void menu_score(bouton *retour);
 

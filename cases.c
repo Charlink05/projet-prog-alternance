@@ -291,11 +291,14 @@ int check_game_over(tableau *ta) {
 }
 
 int check_victoire(tableau *ta){
-    int i, j;
+    MLV_Font *police;
+    int i, j, text_width, text_height;
+    police = MLV_load_font("Seven_Segment.ttf", 125);
     for(i = 0; i < ta -> n; i++){
         for(j = 0; j < ta -> m; j++){
             if(ta -> tab[i][j] == 2048){
-                printf("Bravo vous avez gagné ! \n");
+                MLV_get_size_of_adapted_text_box_with_font("VOUS AVEZ GAGNE !", police, 10, &text_width, &text_height);
+                MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_width) / 2, "VOUS AVEZ GAGNE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_COLOR_CADETBLUE4, MLV_TEXT_CENTER);
                 return 0;
             }
         }

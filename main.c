@@ -24,7 +24,7 @@ int main(){
     initialisation_cases(&c);
     
     fonctionnement();
-    jeu(&ta, &c);
+    /* jeu(&ta, &c); */
 
     MLV_wait_seconds(7);
     MLV_free_window();

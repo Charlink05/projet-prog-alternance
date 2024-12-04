@@ -85,61 +85,62 @@ void menu_save(bouton t_bouton_s[4]){
 
 
 
-/* int read(char *nom, joueur *jo, tableau *ta){ */
-/*     FILE * f; */
-/*     int i, j; */
-/*     if((f = fopen(nom, "r")) == NULL){ */
-/*         printf("Erreur ouverture f \n"); */
-/*         return -1; */
-/*     } */
+int charger(char *nom, joueur *jo, tableau *ta){
+    FILE * f;
+    int i, j;
+    printf("tentative \n");
+    if((f = fopen(nom, "r")) == NULL){
+        /* printf("Erreur ouverture f \n"); */
+        return -1;
+    }
 
-/*     if (fscanf(f, "%s %d", jo -> pseudo, &jo -> score) != 2){ */
-/*         printf("Erreur : lecture pseudo ou score \n"); */
-/*         fclose(f); */
-/*         return -1; */
-/*     } */
+    if (fscanf(f, "%s\n%d", jo -> pseudo, &jo -> score) != 2){
+        printf("Erreur : lecture pseudo ou score \n");
+        fclose(f);
+        return -1;
+    }
     
-/*     if(fscanf(f, "%d %d ", &ta -> n, &ta -> m) != 2){ */
-/*         printf("Erreur lecture dimension grille \n"); */
-/*         fclose(f); */
-/*         return -1; */
-/*     } */
+    if(fscanf(f, "%d %d", &ta -> n, &ta -> m) != 2){
+        printf("Erreur lecture dimension grille \n");
+        fclose(f);
+        return -1;
+    }
 
-/*     for( i = 0; i < ta -> n; i++){ */
-/*         for( j = 0; j < ta -> m; j++){ */
-/*             if(fscanf(f, "%d,", &ta -> tab[i][j]) != 1){ */
-/*                 printf("Erreur lecture case \n"); */
-/*                 fclose(f); */
-/*                 return -1; */
-/*             } */
-/*         } */
-/*     } */
-/*     fclose(f); */
-/*     return 1; */
-/* } */
+    for( i = 0; i < ta -> n; i++){
+        for( j = 0; j < ta -> m; j++){
+            if(fscanf(f, "%d,", &ta -> tab[i][j]) != 1){
+                printf("Erreur lecture case \n");
+                fclose(f);
+                return -1;
+            }
+        }
+    }
+    fclose(f);
+    return 1;
+}
 
 
-/* int writ(char *nom, joueur *jo, tableau *ta){ */
-/*     FILE *f; */
-/*     int i, j; */
-/*     if((f = fopen(nom, "w")) == NULL){ */
-/*         return -1; */
-/*     } */
+int save_p(char *nom, joueur *jo, tableau *ta){
+    FILE *f;
+    int i, j;
+    if((f = fopen(nom, "w")) == NULL){
+        return -1;
+    }
 
-/*     fprintf(f, "%s\n", jo -> pseudo); */
-/*     fprintf(f, "%d\n", jo -> score); */
+    fprintf(f, "%s\n", jo -> pseudo);
+    fprintf(f, "%d\n", jo -> score);
 
-/*     fprintf(f, "%d %d\n", ta -> n, ta -> m); */
+    fprintf(f, "%d %d\n", ta -> n, ta -> m);
 
-/*     for( i = 0; i < ta -> n; i++){ */
-/*         for( j = 0; j < ta -> m; j++){ */
-/*             fprintf(f, "%d ", ta -> tab[i][j]); */
-/*         } */
-/*         fprintf(f, "\n"); */
-/*     } */
-/*     fclose(f); */
-/*     return 1; */
-/* }  */ 
+    for( i = 0; i < ta -> n; i++){
+        for( j = 0; j < ta -> m; j++){
+            fprintf(f, "%d ", ta -> tab[i][j]);
+        }
+        fprintf(f, "\n");
+    }
+    fclose(f);
+    return 1;
+}
 
 
 void menu_score(bouton *retour){
@@ -190,14 +191,14 @@ int clic_bouton(bouton bout[], int lng) {
 }
 
 void fonctionnement(){
-    bouton t_bouton_m[4];/* , t_bouton_s[4]; */
+    bouton t_bouton_m[4], t_bouton_s[4];
     bouton retour;
     int pressed;
     int n = 4, m = 4, ok = 1;
     int retour_menu_p = 1;
     tableau ta;
     cases c;
-    /* joueur j; */
+    joueur j;
     
     menu_depart(t_bouton_m);
 
@@ -213,31 +214,31 @@ void fonctionnement(){
             break;
 
         case 1:
-            /* menu_save(t_bouton_s); */
-            /* while(retour_menu_p == 1){ */
-            /*     pressed = clic_bouton(t_bouton_s, 4); */
-            /*     MLV_actualise_window(); */
+            printf("Menu save \n");
+            menu_save(t_bouton_s);
+            while(retour_menu_p == 1){
+                pressed = clic_bouton(t_bouton_s, 4);
+                MLV_actualise_window();
 
-            /*     if(pressed == 0){ */
-            /*         if(read("Save1.txt", &j, &ta) == 1){ */
-            /*             jeu(&ta, &c); */
-            /*         } */
-            /*     } */
-            /*     if(pressed == 1){ */
-            /*         if(read("Save2.txt", &j, &ta) == 1){ */
-            /*             jeu(&ta, &c); */
-            /*         } */
-            /*     } */
-            /*     if(pressed == 2){ */
-            /*         if(read("Save3.txt", &j, &ta) == 1){ */
-            /*             jeu(&ta, &c); */
-            /*         } */
-            /*     } */
-            /* if(pressed == 3){ */
-            /*     retour_menu_p = 0; */
-            /* } */
-            printf("Save \n");
-
+                if(pressed == 0){
+                    if(charger("save1.txt", &j, &ta) == 1){
+                        jeu(&ta, &c);
+                    }
+                }
+                else if(pressed == 1){
+                    if(charger("save2.txt", &j, &ta) == 1){
+                        jeu(&ta, &c);
+                    }
+                }
+                else if(pressed == 2){
+                    if(charger("save3.txt", &j, &ta) == 1){
+                        jeu(&ta, &c);
+                    }
+                }
+                else if(pressed == 3){
+                    retour_menu_p = 0;
+                }
+            }
             break;
 
         case 2:
