@@ -40,12 +40,12 @@ void menu_depart(bouton t_bouton_m[4]){
     
     MLV_clear_window(MLV_COLOR_GREY);
 
-    police = MLV_load_font("Seven_Segment.ttf", 100);
+    police = MLV_load_font("Woodcut.ttf", 100);
 
     MLV_get_size_of_adapted_text_box_with_font("-- 2048 --", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3, "-- 2048 --", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
     
-    police = MLV_load_font("Seven_Segment.ttf", 60);
+    police = MLV_load_font("Woodcut.ttf", 60);
 
     for(i = 0; i < 4; i++){
         cree_bouton(&t_bouton_m[i], nom_bouton[i], LX / 2, 200 + i * 100, police);
@@ -66,14 +66,14 @@ void menu_save(bouton t_bouton_s[4]){
     
     MLV_clear_window(MLV_COLOR_GREY);
 
-    police = MLV_load_font("Seven_Segment.ttf", 100);
+    police = MLV_load_font("Woodcut.ttf", 100);
 
     MLV_get_size_of_adapted_text_box_with_font("-- SAVE --", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height - 100, "-- SAVE --", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
-    police = MLV_load_font("Seven_Segment.ttf", 70);
+    police = MLV_load_font("Woodcut.ttf", 70);
     
-    for(i = 0; i < 3; i++){
+    for(i = 0; i < 4; i++){
         cree_bouton(&t_bouton_s[i], nom_bouton[i], LX / 2, 200 + i * 100, police);
         afficher_text(t_bouton_s[i], police);
     } 
@@ -88,9 +88,8 @@ void menu_save(bouton t_bouton_s[4]){
 int charger(char *nom, joueur *jo, tableau *ta){
     FILE * f;
     int i, j;
-    printf("tentative \n");
     if((f = fopen(nom, "r")) == NULL){
-        /* printf("Erreur ouverture f \n"); */
+        printf("Erreur ouverture f \n");
         return -1;
     }
 
@@ -115,6 +114,13 @@ int charger(char *nom, joueur *jo, tableau *ta){
             }
         }
     }
+
+    if(fscanf(f, "%d", &ta -> cases_vides) != 1){
+        printf("Erreur lecture nb cases vides \n");
+        fclose(f);
+        return -1;
+    }
+        
     fclose(f);
     return 1;
 }
@@ -123,6 +129,15 @@ int charger(char *nom, joueur *jo, tableau *ta){
 int save_p(char *nom, joueur *jo, tableau *ta){
     FILE *f;
     int i, j;
+
+    for (i = 0; i < ta -> n; i++) {
+        for (j = 0; j < ta -> m; j++) {
+            if (ta -> tab[i][j] == 0) {
+                ta -> cases_vides++;
+            }
+        }
+    }
+
     if((f = fopen(nom, "w")) == NULL){
         return -1;
     }
@@ -138,6 +153,9 @@ int save_p(char *nom, joueur *jo, tableau *ta){
         }
         fprintf(f, "\n");
     }
+
+    fprintf(f ,"%d\n",ta -> cases_vides);
+    
     fclose(f);
     return 1;
 }
@@ -154,12 +172,12 @@ void menu_score(bouton *retour){
     
     MLV_clear_window(MLV_COLOR_GREY);
 
-    police = MLV_load_font("Seven_Segment.ttf", 50);
+    police = MLV_load_font("Woodcut.ttf", 50);
 
     MLV_get_size_of_adapted_text_box_with_font("-- SCORE --", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, text_height / 3, "-- SCORE --", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_BLACK, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
-    police = MLV_load_font("Seven_Segment.ttf", 30);
+    police = MLV_load_font("Woodcut.ttf", 30);
 
     k = 0;
 
@@ -170,7 +188,7 @@ void menu_score(bouton *retour){
          k += 60;
     }
 
-    police = MLV_load_font("Seven_Segment.ttf", 30);
+    police = MLV_load_font("Woodcut.ttf", 30);
 
     cree_bouton(retour, nom_bouton_retour[0], 60, 1, police);
     afficher_text(*retour, police);

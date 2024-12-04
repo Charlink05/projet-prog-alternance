@@ -24,9 +24,10 @@ void jeu(tableau *ta, cases *c){
     srand(time(NULL));
     MLV_clear_window(MLV_COLOR_GREY);
     /* aff_2048(); */
+
+    cases_vides = calculer_cases_vides(ta);
     
     spawn_2_cases(ta, c);
-    cases_vides = 14;
     prec_cases_vides = 14;
 
     /* aff_tableau(*ta); */
@@ -46,9 +47,15 @@ void jeu(tableau *ta, cases *c){
         }
 
         game_over = check_game_over(ta);
-        if (game_over && peux_bouger(ta, &prec) == 0 && cases_vides == 0){
+        if (game_over && peux_bouger(ta, &prec) == 0 && cases_vides <= 0){
+            MLV_Font *police;
+            int text_width, text_height;
             /* printf("Vous avez perdu ! \n"); */
-            MLV_draw_text(300, 200, "Vous avez perdu !", MLV_COLOR_RED);
+            police = MLV_load_font("Woodcut.ttf", 100);
+            MLV_get_size_of_adapted_text_box_with_font("VOUS AVEZ PERDU !", police, 10, &text_width, &text_height);
+            
+            MLV_draw_adapted_text_box_with_font((LX - text_width) / 2, 25, "VOUS AVEZ PERDU !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(255, 0, 0, 255), MLV_TEXT_CENTER);
+            MLV_free_font(police);
             MLV_actualise_window();
             MLV_wait_seconds(2);
             exit(EXIT_FAILURE);
@@ -92,7 +99,8 @@ void jeu(tableau *ta, cases *c){
             if (peux_bouger(ta, &prec) == 0) {
                 spawn_1_cases(ta, c);
                 aff_tableau_mlv(*ta);
-                /* aff_tableau(*ta); */
+                aff_tableau(*ta);
+                cases_vides = calculer_cases_vides(ta);
                 if (nb_fusion == 0) {
                     cases_vides -= 1;
                 } else {

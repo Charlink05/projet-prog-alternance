@@ -11,6 +11,7 @@ typedef struct{
     int tab[N][N];
     int n;
     int m;
+    int cases_vides;
 } tableau;
 
 typedef struct{

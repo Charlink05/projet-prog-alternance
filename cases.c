@@ -16,6 +16,18 @@ void initialisation_cases(cases *c){
     c -> valeur = 0;
 }
 
+int calculer_cases_vides(tableau *ta) {
+    int i, j, cases_vides = 0;
+    for (i = 0; i < ta -> n; i++) {
+        for (j = 0; j < ta -> m; j++) {
+            if (ta -> tab[i][j] == 0) {
+                cases_vides++;
+            }
+        }
+    }
+    return cases_vides;
+}
+
 /* pour l'apparition des 2 premières cases au début du jeu (sera appelé qu'une fois) */
 void spawn_2_cases(tableau *ta, cases *c){
     float chance;
@@ -43,6 +55,7 @@ void spawn_2_cases(tableau *ta, cases *c){
 
         c -> x = i;
         c -> y = j;
+        ta -> cases_vides--;
 
         /* printf("La case %d apparait en (%d, %d) avec la valeur : %d \n", k + 1, i, j,  ta -> tab[i][j]); */
         k++;
@@ -75,6 +88,7 @@ void spawn_1_cases(tableau *ta, cases *c){
 
     c -> x = i;
     c -> y = j;
+    ta -> cases_vides--;
 
 }
 
@@ -287,22 +301,24 @@ int check_game_over(tableau *ta) {
             }
         }
     }
+    printf("Le jeu est terminé. Vous avez perdu !\n"); 
     return 1;
 }
 
 int check_victoire(tableau *ta){
     MLV_Font *police;
     int i, j, text_width, text_height;
-    police = MLV_load_font("Seven_Segment.ttf", 125);
+    police = MLV_load_font("Woodcut.ttf", 100);
     for(i = 0; i < ta -> n; i++){
         for(j = 0; j < ta -> m; j++){
             if(ta -> tab[i][j] == 2048){
                 MLV_get_size_of_adapted_text_box_with_font("VOUS AVEZ GAGNE !", police, 10, &text_width, &text_height);
-                MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_width) / 2, "VOUS AVEZ GAGNE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_COLOR_CADETBLUE4, MLV_TEXT_CENTER);
+                MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 25, "VOUS AVEZ GAGNE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(123, 99, 82, 255), MLV_TEXT_CENTER);
                 return 0;
             }
         }
     }
+    MLV_free_font(police);
     return 1;
 }
 

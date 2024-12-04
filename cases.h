@@ -5,6 +5,8 @@ void aff_cases(cases *c);
 
 void initialisation_cases(cases *c);
 
+int calculer_cases_vides(tableau *ta);
+
 void spawn_2_cases(tableau *ta, cases *c);
 void spawn_1_cases(tableau *ta, cases *c);
 

@@ -23,5 +23,6 @@ tableau initialisation_tableau(int n, int m){
             ta.tab[i][j] = 0;
         }
     }
+    ta.cases_vides = n * m;
     return ta;
 }
