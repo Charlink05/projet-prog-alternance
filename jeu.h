@@ -1,6 +1,6 @@
 #ifndef JEU_H
 #define JEU_H
 
-void jeu(tableau *ta, cases *c);
+void jeu(tableau *ta, cases *c, joueur *j);
 
 #endif

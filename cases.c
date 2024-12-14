@@ -55,7 +55,6 @@ void spawn_2_cases(tableau *ta, cases *c){
 
         c -> x = i;
         c -> y = j;
-        ta -> cases_vides--;
 
         /* printf("La case %d apparait en (%d, %d) avec la valeur : %d \n", k + 1, i, j,  ta -> tab[i][j]); */
         k++;
@@ -88,7 +87,6 @@ void spawn_1_cases(tableau *ta, cases *c){
 
     c -> x = i;
     c -> y = j;
-    ta -> cases_vides--;
 
 }
 
@@ -117,8 +115,9 @@ void retour_arriere(tableau *ta, tableau *prec){
 }
 
 
-void deplacement_a_droite(tableau *ta) {
-    int i, j, k;
+int deplacement_a_droite(tableau *ta, joueur *jo, int score_fusion){
+    int i, j, k, nb_fusion = 0;
+    score_fusion = 0;
     if((MLV_get_keyboard_state(MLV_KEYBOARD_RIGHT) == MLV_PRESSED)){
         for (i = 0; i < ta -> n; i++) {
             for (j = ta -> m - 1; j >= 0; j--) {
@@ -127,35 +126,53 @@ void deplacement_a_droite(tableau *ta) {
                     while (k < ta -> m - 1 && ta -> tab[i][k + 1] == 0) {
                         ta -> tab[i][k + 1] = ta -> tab[i][k];
                         ta -> tab[i][k] = 0;
-                        k++;
+                        k++;  
+                    }
+                    if(k < ta -> m - 1 && ta -> tab[i][k + 1] == ta -> tab[i][k] && ta -> tab[i][k] != 0){
+                        ta -> tab[i][k + 1] *= 2;
+                        ta -> tab[i][k] = 0;
+                        nb_fusion += 1;
+                        score_fusion += ta -> tab[i][k + 1];
                     }
                 }
             }
         }
     }
+    jo -> score += score_fusion;
+    return nb_fusion;
 }
-
      
-void deplacement_a_gauche(tableau *ta){
-    int i, j, k;
+int deplacement_a_gauche(tableau *ta, joueur *jo, int score_fusion){
+    int i, j, k, nb_fusion = 0;
+    score_fusion = 0;
     if((MLV_get_keyboard_state(MLV_KEYBOARD_LEFT) == MLV_PRESSED)){
         for(i = 0; i < ta -> n; i++){
             for(j = 1; j < ta -> m ; j++){
                 k = j;
                 if(ta -> tab[i][j] != 0){
-                    while(k > 0 && ta -> tab[i][k - 1] == 0){ /* on regarde si case de gauche = 0 */
-                        ta -> tab[i][k - 1] = ta -> tab[i][k]; /* la case de gauche devient la case d'avant (déplacement à gauche) */
-                        ta -> tab[i][k] = 0; /* initialisation de l'ancienne case à 0 */
+                    while(k > 0 && ta -> tab[i][k - 1] == 0){
+                        ta -> tab[i][k - 1] = ta -> tab[i][k];
+                        ta -> tab[i][k] = 0;
                         k--;
+                    }
+                    if(k > 0 && ta -> tab[i][k - 1] == ta -> tab[i][k] && ta -> tab[i][k] != 0){
+                        ta -> tab[i][k - 1] *= 2;
+                        ta -> tab[i][k] = 0;
+                        nb_fusion += 1;
+                        score_fusion += ta -> tab[i][k - 1];
                     }
                 }
             }
         }
     }
+    jo -> score += score_fusion;
+    return nb_fusion;
 }
 
-void deplacement_en_bas(tableau *ta){
-    int i, j, k;
+
+int deplacement_en_bas(tableau *ta, joueur *jo, int score_fusion){
+    int i, j, k, nb_fusion = 0;
+    score_fusion = 0;
     if((MLV_get_keyboard_state(MLV_KEYBOARD_DOWN) == MLV_PRESSED)){
         for(i = ta -> n - 1; i >= 0; i--){
             for(j = 0; j < ta -> m; j++){
@@ -166,14 +183,22 @@ void deplacement_en_bas(tableau *ta){
                         ta -> tab[k][j] = 0;
                         k++;
                     }
+                    if(k + 1 < ta -> n && ta -> tab[k + 1][j] == ta -> tab[k][j] && ta -> tab[k][j] != 0){
+                        ta -> tab[k + 1][j] *= 2;
+                        ta -> tab[k][j] = 0;
+                        nb_fusion += 1;
+                        score_fusion += ta -> tab[k + 1][j];
+                    }
                 }
             }
         }
     }
+    jo -> score += score_fusion;
+    return nb_fusion;
 }
-
-void deplacement_en_haut(tableau *ta){
-    int i, j, k;
+int deplacement_en_haut(tableau *ta, joueur *jo, int score_fusion){
+    int i, j, k, nb_fusion = 0;
+    score_fusion = 0;
     if((MLV_get_keyboard_state(MLV_KEYBOARD_UP) == MLV_PRESSED)){
         for(i = 0; i < ta -> n; i++){
             for(j = ta -> m - 1; j >= 0; j--){
@@ -184,86 +209,19 @@ void deplacement_en_haut(tableau *ta){
                         ta -> tab[k][j] = 0;
                         k--;
                     }
+                    if(k - 1 >= 0 && ta -> tab[k - 1][j] == ta -> tab[k][j] && ta -> tab[k][j] != 0){
+                        ta -> tab[k - 1][j] *= 2;
+                        ta -> tab[k][j] = 0;
+                        nb_fusion += 1;
+                        score_fusion += ta -> tab[k - 1][j];
+                    }
                 }
             }
         }
     }
-}
-
-void pause(){
-    if((MLV_get_keyboard_state(MLV_KEYBOARD_a) == MLV_PRESSED)){
-        printf("Jeu en pause ! \n");
-    }
-}
-
-int fusion_droite(tableau *ta){
-    int i, j, nb_fusion;
-    nb_fusion = 0;
-    deplacement_a_droite(ta);
-    for(i = 0; i < ta -> n; i++){
-        for(j = ta -> m - 1; j > 0; j--){
-            if(ta -> tab[i][j] == ta -> tab[i][j - 1] && ta -> tab[i][j] != 0){
-                ta -> tab[i][j] *= 2;
-                ta -> tab[i][j - 1] = 0;
-                nb_fusion += 1;
-            }
-        }
-    }
-    deplacement_a_droite(ta);
+    jo -> score += score_fusion;
     return nb_fusion;
 }
-
-int fusion_gauche(tableau *ta){
-    int i, j, nb_fusion;
-    nb_fusion = 0;
-    deplacement_a_gauche(ta);
-    for(i = 0; i < ta -> n; i++){
-        for(j = 1; j < ta -> m ; j++){
-            if(ta -> tab[i][j] == ta -> tab[i][j - 1] && ta -> tab[i][j] != 0){
-                ta -> tab[i][j - 1] *= 2;
-                ta -> tab[i][j] = 0;
-                nb_fusion += 1;
-            }
-        }
-    }
-    deplacement_a_gauche(ta);
-    return nb_fusion;
-}
-
-int fusion_haut(tableau *ta){
-    int i, j, nb_fusion;
-    nb_fusion = 0;
-    deplacement_en_haut(ta);
-    for(j = 0; j < ta -> m; j++){
-        for(i = 1; i < ta -> n; i++){
-            if(ta -> tab[i][j] == ta -> tab[i - 1][j] && ta -> tab[i][j] != 0){
-                ta -> tab[i - 1][j] *= 2;
-                ta -> tab[i][j] = 0;
-                nb_fusion += 1;
-            }
-        }
-    }
-    deplacement_en_haut(ta);
-    return nb_fusion;
-}
-
-int fusion_bas(tableau *ta){
-    int i, j, nb_fusion;
-    nb_fusion = 0;
-    deplacement_en_bas(ta); 
-    for(j = 0; j < ta -> m; j++){
-        for(i = ta -> n - 2; i >= 0; i--){
-            if(ta -> tab[i][j] == ta -> tab[i + 1][j] && ta -> tab[i][j] != 0){
-                ta -> tab[i + 1][j] *= 2;
-                ta -> tab[i][j] = 0;
-                nb_fusion += 1;
-            }
-        }
-    }
-    deplacement_en_bas(ta);
-    return nb_fusion;
-}
-
 
 int peux_bouger(tableau *ta, tableau *ta2){
     int i, j;
@@ -275,18 +233,7 @@ int peux_bouger(tableau *ta, tableau *ta2){
         }
     }
     return 1;
-}
-
-void retour_coup(tableau *ta, tableau *prec, int a_bouge){
-    a_bouge = 1;
-    if(((MLV_get_keyboard_state(MLV_KEYBOARD_r) == MLV_PRESSED)) && a_bouge == 0){
-        printf("Tableau précédent : \n");
-        retour_arriere(ta, prec);
-    } else if((( MLV_get_keyboard_state(MLV_KEYBOARD_r) == MLV_PRESSED)) && a_bouge == 1){
-        printf("Vous ne pouvez pas revenir en arrière si vous n'avez pas joué de coups. \n");
-    }
-}
-           
+}          
 
 int check_game_over(tableau *ta) {
     int i, j;
@@ -313,7 +260,7 @@ int check_victoire(tableau *ta){
         for(j = 0; j < ta -> m; j++){
             if(ta -> tab[i][j] == 2048){
                 MLV_get_size_of_adapted_text_box_with_font("VOUS AVEZ GAGNE !", police, 10, &text_width, &text_height);
-                MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 25, "VOUS AVEZ GAGNE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(123, 99, 82, 255), MLV_TEXT_CENTER);
+                MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 25, "VOUS AVEZ GAGNE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(235, 193, 132, 255), MLV_TEXT_CENTER);
                 return 0;
             }
         }

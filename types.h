@@ -2,8 +2,8 @@
 #define _TYPE_H_
 
 
-#define LX 1000
-#define LY 1000
+#define LX 1280
+#define LY 720
 #define N 4
 
 
@@ -21,8 +21,9 @@ typedef struct{
 } cases;
 
 typedef struct{
-    char pseudo[100];
+    /* char pseudo[100]; */
     int score;
+    int meilleur_score;
 } joueur;
 
 /* Menu */
